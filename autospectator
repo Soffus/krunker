@@ -1,0 +1,23 @@
+// ==UserScript==
+// @name auto-spectate
+// @author KraXen72
+// @version 2.0.0
+// @desc automatically switch to spectator mode	
+// @run-at document-end 
+// ==/UserScript==
+
+const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+let interval = null
+
+function checkSpect() {
+	if (has(globalThis, "setSpect") && typeof globalThis.setSpect === 'function') {
+		globalThis.setSpect(true)
+		clearInterval(interval)
+		this._console.log("sucessfully set spectator mode!")
+	}
+}
+
+interval = setInterval(() => checkSpect.apply(this), 250)
+
+this.unload = () => clearInterval(interval) 
+return this
