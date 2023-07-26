@@ -1,0 +1,47 @@
+// ==UserScript==
+// @name         Timer Modifier
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Modify timer and instructions content on the page.
+// @author       You
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Check if menuTimer config is set to true
+    const config = false; // Change this to true to enable the timer modifications
+
+    if (!config) return;
+
+    // Get references to the timerVal and instructions elements
+    let timerVal = document.getElementById('timerVal');
+    let instructions = document.getElementById('instructions');
+
+    // Store the original value of timerVal.textContent
+    let v;
+
+    // Replace the setter function of timerVal.textContent
+    Object.defineProperty(timerVal, 'textContent', {
+        set: function(val) {
+            this.innerText = val;
+            // Find the first text node among instructions' children or use instructions itself
+            ([...instructions.childNodes].find(x => x.nodeType === 3) || instructions).textContent = val;
+            v = val;
+        }
+    });
+
+    // Store the original setter function of Element.prototype.innerHTML
+    let oSetter = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set;
+
+    // Replace the setter function of instructions.innerHTML
+    Object.defineProperty(instructions, 'innerHTML', {
+        set: function(val) {
+            oSetter.call(this, val);
+            // Find the first text node among instructions' children or use instructions itself
+            ([...instructions.childNodes].find(x => x.nodeType === 3) || this).textContent = v;
+        }
+    });
+})();
