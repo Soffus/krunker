@@ -12,7 +12,7 @@
     'use strict';
 
     // Check if menuTimer config is set to true
-    const config = false; // Change this to true to enable the timer modifications
+    const config = true; // Change this to true to enable the timer modifications
 
     if (!config) return;
 
